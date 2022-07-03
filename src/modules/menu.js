@@ -1,6 +1,10 @@
 const readline = require('readline');
+const { redisClient } = require('../server/redis-client');
+const { generateMegaSenaValues } = require('../utils/generateMegaSenaValues');
 
-function showMenu() {
+async function showMenu() {
+    await redisClient.connect(); 
+
     const userAnswerReadline = readline.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -10,10 +14,23 @@ function showMenu() {
     userAnswerReadline.prompt();
 
     userAnswerReadline
-        .on('line', (userOption) => {
+        .on('line', async (userOption) => {
             switch (userOption) {
                 case '1':
-                    console.log('oi...');
+                    await redisClient.flushAll();
+
+                    const inserts = [];
+                    const megaSenaValues = generateMegaSenaValues();
+
+                    for(const value of megaSenaValues) {
+                        for(const key in value) {
+                            inserts.push(redisClient.hSet(`${value.numero_sorteio}`, `${key}`, typeof value[key] === 'object' ? JSON.stringify(value[key]) : value[key]));
+                        }
+                    }
+
+                    await Promise.all(inserts);
+
+                    console.log('\nConcursos aleatórios gerados e inseridos no redis!!\n');
                     break;
                 case '2':
                     console.log('oi 2...');

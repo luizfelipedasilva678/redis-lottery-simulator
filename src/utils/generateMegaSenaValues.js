@@ -1,10 +1,9 @@
 const { getRandomLotteryResult } = require('./getRandomLotteryResults');
-const { getRandomIntInclusive } = require('./getRandomNumbers');
 const { getRandomWinners } = require('./getRandomWinners');
 
 function generateMegaSenaValues() {
     const values = [];
-    const initialDate = new Date('11-03-1996');
+    const initialDate = new Date('10-10-1999');
     const today = new Date();
     let drawNumber = 0;
 

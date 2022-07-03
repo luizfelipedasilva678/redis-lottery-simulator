@@ -1,11 +1,5 @@
-//const { showMenu } = require("./modules/menu");
-
-const { generateMegaSenaValues } = require("./utils/generateMegaSenaValues");
+const { showMenu } = require("./modules/menu");
 
 (() => {
-    //showMenu();
-
-    const megaSenaValues = generateMegaSenaValues();
-
-    console.log('values --> ', megaSenaValues);
+    showMenu();
 })();
