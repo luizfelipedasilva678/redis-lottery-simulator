@@ -5,7 +5,7 @@ function generateMegaSenaValues() {
     const values = [];
     const initialDate = new Date('10-10-1999');
     const today = new Date();
-    let drawNumber = 0;
+    let drawNumber = 1;
 
     let finishDateTimeStamp = initialDate.valueOf();
 
@@ -20,11 +20,12 @@ function generateMegaSenaValues() {
             ganhadores: getRandomWinners()
         };
  
-        if(isWednesdayOrSaturday) 
+        if(isWednesdayOrSaturday) {
             values.push(value);
+            drawNumber += 1;
+        }
 
         finishDateTimeStamp = finishDateInDate.setDate(finishDateInDate.getDate() + 1).valueOf();  
-        drawNumber += 1;
     }
 
     return values;
