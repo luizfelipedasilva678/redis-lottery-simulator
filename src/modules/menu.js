@@ -7,7 +7,7 @@ function showInitialMenu(rl) {
         "\nO que deseja fazer ?" + "\n\n" +
         "digite '1' para gerar resultados de mega-sena aleatórios" + "\n" +
         "digite '2' para consultar um concurso de mega-sena pelo número" + "\n" +
-        "digite '3' para consultar um concurso de mega-sena pela data" + "\n" +
+        "digite '3' para consultar um concurso de mega-sena pela data (yyyy-mm-dd)" + "\n" +
         "digite '4' para sair do programa" + "\n";
 
     return new Promise((resolve) => {
@@ -32,12 +32,13 @@ function getDateFromUser(rl) {
 }
 
 async function redisControl(userAnswer, rl) {
+    const megaSenaValues = generateMegaSenaValues();
+    
     switch (userAnswer) {
         case '1':
             await redisClient.flushAll();
 
             const inserts = [];
-            const megaSenaValues = generateMegaSenaValues();
 
             for(const value of megaSenaValues) {
                 for(const key in value) {
@@ -54,14 +55,20 @@ async function redisControl(userAnswer, rl) {
             break;
         case '2':
             const answerTwo = await getNumeroDoSorteioFromUser(rl);
-            console.log('consultando pelo numero -> ', answerTwo);
+            
+            console.log("Sorteio ", answerTwo, "=> " ,JSON.stringify(await redisClient.hGetAll(answerTwo)), "\n");
 
             const answerOnePassTwo = await showInitialMenu(rl);
             redisControl(answerOnePassTwo, rl);
             break;
         case '3':
             const answerThree = await getDateFromUser(rl);
-            console.log('consultando pela data -> ', answerThree);
+
+            const responseSearch = megaSenaValues.find(megaSenaValue => {
+                return megaSenaValue.data.includes(answerThree);
+            })
+
+            console.log(JSON.stringify(await redisClient.hGetAll(String(responseSearch.numero_sorteio)), "\n"));
 
             const answerOnePassThree = await showInitialMenu(rl);
             redisControl(answerOnePassThree, rl);
